@@ -7,7 +7,7 @@
     <title>Instagram with askcompany</title>
 
     <link rel="stylesheet" href={% static 'bootstrap-4.5.2-dist/css/bootstrap.min.css' %} />
-    <script src={% static 'jquery-4.5.2.min.js' %}></script>
+    <script src={% static 'jquery-3.5.1.min.js' %}></script>
     <script src={% static "bootstrap-4.5.2-dist/js/bootstrap.min.js" %}></script>
 
 </head>
@@ -63,13 +63,14 @@
                                 </svg>
                             </a>
                             <a class="p-2 text-dark" href="{% url 'profile_edit' %}">
-                                {% if user.is_authenticated %}
+                                {% comment %} {% if user.is_authenticated %}
                                     {% if user.avatar %}
                                         <img src="{{ user.avatar.url }}" style="width:24px"/>
                                     {% else %}
                                         <img src="{% url 'pydenticon_image' user.username %}" style="width:24px" />
                                     {% endif %}
-                                {% endif %}
+                                {% endif %} {% endcomment %}
+                                <img src="{{ user.avatar_url }}" style="width:24px; height:24px;" />
                             </a>
                         </nav>
                     </div>
