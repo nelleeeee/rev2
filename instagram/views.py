@@ -4,6 +4,27 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
 from .forms import PostForm
 from .models import Post
+from django.db.models import Q
+
+
+@login_required
+def index(request):
+    post_list = Post.objects.all().filter(
+        Q(author=request.user) | Q(author__in=request.user.following_set.all())
+    )
+
+    suggested_user_list = (
+        get_user_model()
+        .objects.all()
+        .exclude(pk=request.user.pk)
+        .exclude(pk__in=request.user.following_set.all())[:3]
+    )
+
+    return render(
+        request,
+        "instagram/index.html",
+        {"post_list": post_list, "suggested_user_list": suggested_user_list,},
+    )
 
 
 @login_required
@@ -31,9 +52,14 @@ def post_detail(request, pk):
 def user_page(request, username):
     page_user = get_object_or_404(get_user_model(), username=username, is_active=True)
     post_list = Post.objects.filter(author=page_user)
+    post_list_count = post_list.count()
     return render(
         request,
         "instagram/user_page.html",
-        {"page_user": page_user, "post_list": post_list,},
+        {
+            "page_user": page_user,
+            "post_list": post_list,
+            "post_list_count": post_list_count,
+        },
     )
 

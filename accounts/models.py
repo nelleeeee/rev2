@@ -9,6 +9,9 @@ class User(AbstractUser):
         MALE = "M", "Male"
         FEMALE = "F", "Female"
 
+    follower_set = models.ManyToManyField("self", blank=True)
+    following_set = models.ManyToManyField("self", blank=True)
+
     website_url = models.URLField(blank=True)
     bio = models.TextField(blank=True)
     phone_number = models.CharField(
@@ -26,6 +29,6 @@ class User(AbstractUser):
     @property
     def avatar_url(self):
         if self.avatar:
-            return self.avatar_url
+            return self.avatar.url
         else:
             return resolve_url("pydenticon_image", self.username)
